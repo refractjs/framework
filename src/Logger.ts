@@ -51,12 +51,11 @@ export class Logger {
     if (level < this.level) return;
     const message = args.map(this.inspect).join(" ");
     const name = this.name ? `[${this.name}] ` : "";
-    const lines = message
-      .split("\n")
-      .map((line) => `[${LogLevel[level]}] ${name}${line}`);
     const [color, background, method] = Logger.levels[level];
-    for (const line of lines) {
-      this.output[method](this.chalk[color][background](line));
+    for (const line of message.split("\n")) {
+      this.output[method](
+        this.chalk[color][background](`[${LogLevel[level]}] ${name}`) + line
+      );
     }
   }
 
