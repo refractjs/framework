@@ -75,6 +75,7 @@ export class PieceLoader {
       if (stats.isDirectory()) {
         yield* this.walk(fullPath);
       } else if (stats.isFile()) {
+        if (!path.endsWith(".js")) continue;
         yield fullPath;
       }
     }
