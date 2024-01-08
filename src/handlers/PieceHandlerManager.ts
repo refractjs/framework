@@ -1,11 +1,11 @@
 import { Collection } from "discord.js";
-import { CommandHandler } from "./CommandHandler";
+// import { CommandHandler } from "./CommandHandler";
 import { ListenerHandler } from "./ListenerHandler";
 import { PieceHandler } from "./PieceHandler";
 
 export interface Handlers {
   listener: ListenerHandler;
-  command: CommandHandler;
+  // command: CommandHandler;
 }
 
 export class PieceHandlerManager extends Collection<string, PieceHandler> {

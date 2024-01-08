@@ -6,7 +6,7 @@ import { PieceStore } from "./piece/PieceStore";
 import { PieceHandlerManager } from "./handlers/PieceHandlerManager";
 import { ListenerHandler } from "./handlers/ListenerHandler";
 import { PieceLoader } from "./piece/PieceLoader";
-import { CommandHandler } from "./handlers/CommandHandler";
+// import { CommandHandler } from "./handlers/CommandHandler";
 
 export class RefractClient extends Client {
   public logger: Logger;
@@ -27,9 +27,8 @@ export class RefractClient extends Client {
     this.handlers = new PieceHandlerManager();
     this.loader = new PieceLoader(this);
 
-    this.handlers
-      .register(new ListenerHandler(this))
-      .register(new CommandHandler(this));
+    this.handlers.register(new ListenerHandler(this));
+    // .register(new CommandHandler(this));
 
     this.plugins.register(new CorePlugin(this));
   }
