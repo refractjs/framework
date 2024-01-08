@@ -50,11 +50,12 @@ export class Logger {
   private log(level: LogLevel, ...args: unknown[]) {
     if (level < this.level) return;
     const message = args.map(this.inspect).join(" ");
-    const name = this.name ? `[${this.name}] ` : "";
+    const name = this.name ? ` [${this.name}]` : "";
     const [color, background, method] = Logger.levels[level];
     for (const line of message.split("\n")) {
       this.output[method](
-        this.chalk[color][background](`[${LogLevel[level]}] ${name}`) + line
+        this.chalk[color][background](`[${LogLevel[level]}]${name}`) +
+          ` ${line}`
       );
     }
   }
