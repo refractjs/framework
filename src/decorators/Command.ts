@@ -11,7 +11,7 @@
 
 //     const handlers = Reflect.getMetadata(
 //       "refract:handlers",
-//       target
+//       target.constructor
 //     ) as HandlerMetadata[];
 
 //     const handler: CommandHandlerMetadata = {

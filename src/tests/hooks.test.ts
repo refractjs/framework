@@ -24,7 +24,7 @@ class Test {
 describe("Hooks", () => {
   test("should set metadata to class", () => {
     const test = new Test();
-    const hooks = Reflect.getMetadata("hooks", test);
+    const hooks = Reflect.getMetadata("hooks", test.constructor);
     expect(hooks).toEqual([{ name: "hook:test", propertyKey: "method1" }]);
   });
 

@@ -14,7 +14,7 @@ export function Listener(options?: ListenerOptions): MethodDecorator {
 
     const handlers = Reflect.getMetadata(
       "refract:handlers",
-      target
+      target.constructor
     ) as HandlerMetadata[];
 
     const handler: ListenerHandlerMetadata = {
