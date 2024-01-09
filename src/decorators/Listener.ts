@@ -1,3 +1,4 @@
+import { Constants } from "../constants";
 import { ListenerHandlerMetadata } from "../handlers/ListenerHandler";
 import { HandlerMetadata } from "../handlers/PieceHandler";
 
@@ -8,12 +9,16 @@ export interface ListenerOptions {
 
 export function Listener(options?: ListenerOptions): MethodDecorator {
   return (target, propertyKey) => {
-    if (!Reflect.hasMetadata("refract:handlers", target.constructor)) {
-      Reflect.defineMetadata("refract:handlers", [], target.constructor);
+    if (!Reflect.hasMetadata(Constants.Metadata.Handlers, target.constructor)) {
+      Reflect.defineMetadata(
+        Constants.Metadata.Handlers,
+        [],
+        target.constructor
+      );
     }
 
     const handlers = Reflect.getMetadata(
-      "refract:handlers",
+      Constants.Metadata.Handlers,
       target.constructor
     ) as HandlerMetadata[];
 
@@ -25,6 +30,10 @@ export function Listener(options?: ListenerOptions): MethodDecorator {
     };
     handlers.push(handler);
 
-    Reflect.defineMetadata("refract:handlers", handlers, target.constructor);
+    Reflect.defineMetadata(
+      Constants.Metadata.Handlers,
+      handlers,
+      target.constructor
+    );
   };
 }

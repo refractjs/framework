@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { CommandHandlerMetadata } from "../handlers/CommandHandler";
 import { HandlerMetadata } from "../handlers/PieceHandler";
+import { Constants } from "../constants";
 
 export interface CommandOptions {
   name: string;
@@ -19,12 +20,16 @@ export interface CommandOptions {
 
 export function Command(options: CommandOptions): MethodDecorator {
   return (target, propertyKey) => {
-    if (!Reflect.hasMetadata("refract:handlers", target.constructor)) {
-      Reflect.defineMetadata("refract:handlers", [], target.constructor);
+    if (!Reflect.hasMetadata(Constants.Metadata.Handlers, target.constructor)) {
+      Reflect.defineMetadata(
+        Constants.Metadata.Handlers,
+        [],
+        target.constructor
+      );
     }
 
     const handlers = Reflect.getMetadata(
-      "refract:handlers",
+      Constants.Metadata.Handlers,
       target.constructor
     ) as HandlerMetadata[];
 
@@ -41,7 +46,11 @@ export function Command(options: CommandOptions): MethodDecorator {
     };
     handlers.push(handler);
 
-    Reflect.defineMetadata("refract:handlers", handlers, target.constructor);
+    Reflect.defineMetadata(
+      Constants.Metadata.Handlers,
+      handlers,
+      target.constructor
+    );
   };
 }
 
@@ -114,12 +123,21 @@ function createOptionDecorator<D extends SlashCommandOptionData>(
     if (typeof propertyKey !== "string") {
       throw new Error("propertyKey must be a string");
     }
-    if (!Reflect.hasMetadata("refract:slashOptions", target.constructor)) {
-      Reflect.defineMetadata("refract:slashOptions", {}, target.constructor);
+    if (
+      !Reflect.hasMetadata(
+        Constants.Metadata.CommandOptions,
+        target.constructor
+      )
+    ) {
+      Reflect.defineMetadata(
+        Constants.Metadata.CommandOptions,
+        {},
+        target.constructor
+      );
     }
 
     const slashOptions = Reflect.getMetadata(
-      "refract:slashOptions",
+      Constants.Metadata.CommandOptions,
       target.constructor
     ) as Record<
       string,
@@ -137,7 +155,7 @@ function createOptionDecorator<D extends SlashCommandOptionData>(
     });
 
     Reflect.defineMetadata(
-      "refract:slashOptions",
+      Constants.Metadata.CommandOptions,
       slashOptions,
       target.constructor
     );

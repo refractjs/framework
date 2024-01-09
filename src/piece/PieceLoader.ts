@@ -5,6 +5,7 @@ import { HandlerMetadata } from "../handlers/PieceHandler";
 import { Constructor } from "../types/utility";
 import { Piece, PieceContext } from "./Piece";
 import { Plugin } from "../plugins/Plugin";
+import { Constants } from "../constants";
 
 export class PieceLoader {
   public client: RefractClient;
@@ -25,7 +26,7 @@ export class PieceLoader {
     const piece = new Piece(context);
 
     const metadata: HandlerMetadata[] =
-      Reflect.getMetadata("refract:handlers", piece.constructor) ?? [];
+      Reflect.getMetadata(Constants.Metadata.Handlers, piece.constructor) ?? [];
 
     for (const data of metadata) {
       piece[data.propertyKey] = (piece[data.propertyKey] as any).bind(piece);
@@ -53,7 +54,7 @@ export class PieceLoader {
   public async unload(piece: Piece) {
     this.client.store.delete(piece.name);
     const handlers: HandlerMetadata[] =
-      Reflect.getMetadata("refract:handlers", piece.constructor) ?? [];
+      Reflect.getMetadata(Constants.Metadata.Handlers, piece.constructor) ?? [];
     for (const data of handlers) {
       this.client.handlers.get(data.handler).unregister(piece, data as any);
     }

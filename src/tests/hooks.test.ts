@@ -1,3 +1,4 @@
+import { Constants } from "../constants";
 import {
   createHookDecorator,
   getHooks,
@@ -24,7 +25,10 @@ class Test {
 describe("Hooks", () => {
   test("should set metadata to class", () => {
     const test = new Test();
-    const hooks = Reflect.getMetadata("hooks", test.constructor);
+    const hooks = Reflect.getMetadata(
+      Constants.Metadata.Hooks,
+      test.constructor
+    );
     expect(hooks).toEqual([{ name: "hook:test", propertyKey: "method1" }]);
   });
 

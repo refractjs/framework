@@ -10,6 +10,7 @@ import {
 } from "../decorators/Command";
 import { Piece } from "../piece/Piece";
 import { HandlerMetadata, PieceHandler } from "./PieceHandler";
+import { Constants } from "../constants";
 
 export interface CommandHandlerMetadata extends HandlerMetadata {
   name: string;
@@ -42,9 +43,10 @@ export class CommandHandler extends PieceHandler {
       ...options,
       piece,
       options:
-        Reflect.getMetadata("refract:slashOptions", piece.constructor)?.[
-          options.propertyKey
-        ] ?? [],
+        Reflect.getMetadata(
+          Constants.Metadata.CommandOptions,
+          piece.constructor
+        )?.[options.propertyKey] ?? [],
     };
 
     this.commands.set(
