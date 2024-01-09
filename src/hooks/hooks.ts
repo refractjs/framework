@@ -42,7 +42,6 @@ export async function runHooks(
   const hooks = getHooksByType(target, name);
 
   for (const hook of hooks) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (target as any)[hook](...args);
   }
 }
@@ -51,7 +50,6 @@ export function runHooksSync(target: object, name: string, ...args: unknown[]) {
   const hooks = getHooksByType(target, name);
 
   for (const hook of hooks) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (target as any)[hook](...args);
   }
 }

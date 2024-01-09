@@ -15,11 +15,10 @@ export class ListenerHandler extends PieceHandler {
     super(client, "listener");
   }
   public async register(piece: Piece, options: ListenerHandlerMetadata) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.client.on(options.name as any, piece[options.propertyKey] as any);
+    const method = options.once ? "once" : "on";
+    this.client[method](options.name as any, piece[options.propertyKey] as any);
   }
   public async unregister(piece: Piece, options: ListenerHandlerMetadata) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.client.off(options.name as any, piece[options.propertyKey] as any);
   }
 }

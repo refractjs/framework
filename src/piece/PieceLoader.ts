@@ -1,6 +1,5 @@
 import fs from "fs/promises";
 import { basename, extname, sep } from "path";
-import { Logger } from "../Logger";
 import { RefractClient } from "../RefractClient";
 import { HandlerMetadata } from "../handlers/PieceHandler";
 import { Constructor } from "../types/utility";
@@ -9,8 +8,6 @@ import { Plugin } from "../plugins/Plugin";
 
 export class PieceLoader {
   public client: RefractClient;
-
-  private logger = Logger.create("Loader");
 
   public constructor(client: RefractClient) {
     this.client = client;
@@ -31,13 +28,17 @@ export class PieceLoader {
       Reflect.getMetadata("refract:handlers", piece.constructor) ?? [];
 
     for (const data of metadata) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       piece[data.propertyKey] = (piece[data.propertyKey] as any).bind(piece);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.client.handlers.get(data.handler).register(piece, data as any);
     }
+
+    // see if the piece is enabled
+    // see if the piece already exists
+    // run register hooks
+    // check if it's still enabled
+
     this.client.store.set(piece.name, piece);
-    this.logger.debug(
+    this.client.logger.debug(
       `Piece ${piece.name} loaded with ${metadata.length} handler(s).`
     );
     return piece;
@@ -54,7 +55,6 @@ export class PieceLoader {
     const handlers: HandlerMetadata[] =
       Reflect.getMetadata("refract:handlers", piece.constructor) ?? [];
     for (const data of handlers) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.client.handlers.get(data.handler).unregister(piece, data as any);
     }
   }

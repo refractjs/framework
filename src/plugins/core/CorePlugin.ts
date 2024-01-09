@@ -8,7 +8,7 @@ export class CorePlugin extends Plugin {
     super(client, {
       name: "core",
       description: "The core plugin.",
-      intents: [],
+      intents: ["Guilds"],
     });
   }
 

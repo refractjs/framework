@@ -1,6 +1,6 @@
 import { Collection } from "discord.js";
 import { RefractClient } from "../RefractClient";
-import { runHooks } from "../hooks/hooks";
+import { runHooks, runHooksSync } from "../hooks/hooks";
 import { Plugin } from "./Plugin";
 
 export class PluginManager extends Collection<string, Plugin> {
@@ -21,12 +21,14 @@ export class PluginManager extends Collection<string, Plugin> {
 
   public register(plugin: Plugin) {
     this.set(plugin.name, plugin);
+    runHooksSync(plugin, "plugin:register");
     this.client.logger.info(`Plugin ${plugin.name} registered.`);
     return this;
   }
 
   public unregister(plugin: Plugin) {
     this.delete(plugin.name);
+    runHooksSync(plugin, "plugin:unregister");
     this.client.logger.info(`Plugin ${plugin.name} unregistered.`);
     return this;
   }

@@ -1,12 +1,16 @@
-import { Client, User } from "discord.js";
-import { Logger } from "./Logger";
-import { PluginManager } from "./plugins/PluginMananger";
+import { Client, ClientOptions, User } from "discord.js";
+import { LogLevel, Logger } from "./Logger";
+import { PluginManager } from "./plugins/PluginManager";
 import { CorePlugin } from "./plugins/core/CorePlugin";
 import { PieceStore } from "./piece/PieceStore";
 import { PieceHandlerManager } from "./handlers/PieceHandlerManager";
 import { ListenerHandler } from "./handlers/ListenerHandler";
 import { PieceLoader } from "./piece/PieceLoader";
-// import { CommandHandler } from "./handlers/CommandHandler";
+import { CommandHandler } from "./handlers/CommandHandler";
+
+export interface RefractClientOptions extends ClientOptions {
+  logLevel?: LogLevel;
+}
 
 export class RefractClient extends Client {
   public logger: Logger;
@@ -16,19 +20,18 @@ export class RefractClient extends Client {
   public handlers: PieceHandlerManager;
   public loader: PieceLoader;
 
-  public constructor() {
-    super({
-      intents: [],
-    });
+  public constructor(options: RefractClientOptions) {
+    super(options);
 
-    this.logger = Logger.create();
+    this.logger = Logger.create().setLevel(options.logLevel ?? LogLevel.info);
     this.plugins = new PluginManager(this);
     this.store = new PieceStore();
     this.handlers = new PieceHandlerManager();
     this.loader = new PieceLoader(this);
 
-    this.handlers.register(new ListenerHandler(this));
-    // .register(new CommandHandler(this));
+    this.handlers
+      .register(new ListenerHandler(this))
+      .register(new CommandHandler(this));
 
     this.plugins.register(new CorePlugin(this));
   }

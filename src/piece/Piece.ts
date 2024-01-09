@@ -63,7 +63,7 @@ export class Piece<TPlugin extends Plugin = Plugin> {
   public enabled: boolean;
   public location: PieceLocation;
   public pluginId: string;
-  [key: string | symbol]: unknown;
+  [key: string | symbol]: any;
 
   public constructor(context: PieceContext, options: PieceOptions) {
     this.client = context.client;
@@ -78,11 +78,11 @@ export class Piece<TPlugin extends Plugin = Plugin> {
   }
 
   public async unload() {
-    // await this.client.loader.unload(this);
+    await this.client.loader.unload(this);
   }
 
   public async reload() {
-    // await this.client.loader.load(this.location.root, this.location.name);
+    await this.client.loader.load(this.location.root, this.location.name);
   }
 
   public toJSON(): PieceJSON {
