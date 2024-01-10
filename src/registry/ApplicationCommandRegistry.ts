@@ -17,7 +17,7 @@ export class ApplicationCommandRegistry {
 
   public addOption(
     builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
-    data: SlashCommandOptionMetadata
+    data: SlashCommandOptionMetadata,
   ) {
     if (data.type === ApplicationCommandOptionType.String) {
       data;
@@ -28,14 +28,14 @@ export class ApplicationCommandRegistry {
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false)
+            .setRequired(data.data.required ?? false),
         );
       case ApplicationCommandOptionType.Boolean:
         return builder.addBooleanOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false)
+            .setRequired(data.data.required ?? false),
         );
       case ApplicationCommandOptionType.Channel:
         return builder.addChannelOption((option) =>
@@ -43,45 +43,51 @@ export class ApplicationCommandRegistry {
             .setName(data.data.name)
             .setDescription(data.data.description)
             .setRequired(data.data.required ?? false)
-            .addChannelTypes(...(data.data.channelTypes ?? []))
+            .addChannelTypes(...(data.data.channelTypes ?? [])),
         );
       case ApplicationCommandOptionType.Integer:
         return builder.addIntegerOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false)
+            .setRequired(data.data.required ?? false),
         );
       case ApplicationCommandOptionType.Mentionable:
         return builder.addMentionableOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false)
+            .setRequired(data.data.required ?? false),
         );
       case ApplicationCommandOptionType.Number:
         return builder.addNumberOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false)
+            .setRequired(data.data.required ?? false),
         );
       case ApplicationCommandOptionType.Role:
         return builder.addRoleOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false)
+            .setRequired(data.data.required ?? false),
         );
       case ApplicationCommandOptionType.String:
         return builder.addStringOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false)
+            .setRequired(data.data.required ?? false),
+        );
+      case ApplicationCommandOptionType.User:
+        return builder.addUserOption((option) =>
+          option
+            .setName(data.data.name)
+            .setDescription(data.data.description)
+            .setRequired(data.data.required ?? false),
         );
     }
-    return builder;
   }
 
   public buildCommand(command: CommandEntry) {
@@ -127,7 +133,7 @@ export class ApplicationCommandRegistry {
       command.addSubcommandGroup((group) =>
         group
           .setName(groupCommand.group!)
-          .setDescription(groupCommand.description)
+          .setDescription(groupCommand.description),
       );
     }
 
@@ -138,7 +144,7 @@ export class ApplicationCommandRegistry {
       const group = (command.options as any[]).find(
         (option) =>
           option instanceof SlashCommandSubcommandGroupBuilder &&
-          option.name === subcommandCommand.group
+          option.name === subcommandCommand.group,
       ) as SlashCommandSubcommandGroupBuilder | undefined;
       if (!group) continue;
       group.addSubcommand(this.buildSubcommand(subcommandCommand));
