@@ -28,21 +28,21 @@ export class ApplicationCommandRegistry {
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false),
+            .setRequired(data.data.required ?? true),
         );
       case ApplicationCommandOptionType.Boolean:
         return builder.addBooleanOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false),
+            .setRequired(data.data.required ?? true),
         );
       case ApplicationCommandOptionType.Channel:
         return builder.addChannelOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false)
+            .setRequired(data.data.required ?? true)
             .addChannelTypes(...(data.data.channelTypes ?? [])),
         );
       case ApplicationCommandOptionType.Integer:
@@ -50,42 +50,42 @@ export class ApplicationCommandRegistry {
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false),
+            .setRequired(data.data.required ?? true),
         );
       case ApplicationCommandOptionType.Mentionable:
         return builder.addMentionableOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false),
+            .setRequired(data.data.required ?? true),
         );
       case ApplicationCommandOptionType.Number:
         return builder.addNumberOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false),
+            .setRequired(data.data.required ?? true),
         );
       case ApplicationCommandOptionType.Role:
         return builder.addRoleOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false),
+            .setRequired(data.data.required ?? true),
         );
       case ApplicationCommandOptionType.String:
         return builder.addStringOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false),
+            .setRequired(data.data.required ?? true),
         );
       case ApplicationCommandOptionType.User:
         return builder.addUserOption((option) =>
           option
             .setName(data.data.name)
             .setDescription(data.data.description)
-            .setRequired(data.data.required ?? false),
+            .setRequired(data.data.required ?? true),
         );
     }
   }
