@@ -1,12 +1,12 @@
 import { Client, ClientOptions, User } from "discord.js";
 import { LogLevel, Logger } from "./Logger";
+import { CommandHandler } from "./handlers/CommandHandler";
+import { ListenerHandler } from "./handlers/ListenerHandler";
+import { PieceHandlerManager } from "./handlers/PieceHandlerManager";
+import { PieceLoader } from "./piece/PieceLoader";
+import { PieceStore } from "./piece/PieceStore";
 import { PluginManager } from "./plugins/PluginManager";
 import { CorePlugin } from "./plugins/core/CorePlugin";
-import { PieceStore } from "./piece/PieceStore";
-import { PieceHandlerManager } from "./handlers/PieceHandlerManager";
-import { ListenerHandler } from "./handlers/ListenerHandler";
-import { PieceLoader } from "./piece/PieceLoader";
-import { CommandHandler } from "./handlers/CommandHandler";
 import { ApplicationCommandRegistry } from "./registry/ApplicationCommandRegistry";
 
 export interface RefractClientOptions extends ClientOptions {
@@ -47,7 +47,9 @@ export class RefractClient extends Client {
       this.logger.error(error);
     }
 
-    this.options.intents.add(this.plugins.calculateIntents());
+    this.options.intents = this.options.intents.add(
+      this.plugins.calculateIntents()
+    );
 
     try {
       await this.login(token);
