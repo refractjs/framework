@@ -1,12 +1,12 @@
 import { Interaction } from "discord.js";
 import { Listener } from "../../../decorators/Listener";
 import { Piece, PieceContext } from "../../../piece/Piece";
-import { CorePlugin } from "../CorePlugin";
+import { InternalPlugin } from "../InternalPlugin";
 
-export default class extends Piece<CorePlugin> {
+export default class extends Piece<InternalPlugin> {
   public constructor(context: PieceContext) {
     super(context, {
-      name: "core.interactions",
+      name: "internal.interactions",
     });
   }
 

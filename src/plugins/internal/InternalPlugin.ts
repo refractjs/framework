@@ -3,11 +3,11 @@ import { RefractClient } from "../../RefractClient";
 import { PluginLoad, PluginUnload } from "../../hooks/decorators";
 import { Plugin } from "../Plugin";
 
-export class CorePlugin extends Plugin {
+export class InternalPlugin extends Plugin {
   public constructor(client: RefractClient) {
     super(client, {
-      name: "core",
-      description: "The core plugin.",
+      name: "internal",
+      description: "The internal plugin.",
       intents: ["Guilds"],
     });
   }

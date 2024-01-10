@@ -6,8 +6,8 @@ import { PieceHandlerManager } from "./handlers/PieceHandlerManager";
 import { PieceLoader } from "./piece/PieceLoader";
 import { PieceStore } from "./piece/PieceStore";
 import { PluginManager } from "./plugins/PluginManager";
-import { CorePlugin } from "./plugins/core/CorePlugin";
 import { ApplicationCommandRegistry } from "./registry/ApplicationCommandRegistry";
+import { InternalPlugin } from "./plugins/internal/InternalPlugin";
 
 export interface RefractClientOptions extends ClientOptions {
   logLevel?: LogLevel;
@@ -36,7 +36,7 @@ export class RefractClient extends Client {
       .register(new ListenerHandler(this))
       .register(new CommandHandler(this));
 
-    this.plugins.register(new CorePlugin(this));
+    this.plugins.register(new InternalPlugin(this));
   }
 
   public async start(token: string) {
@@ -48,7 +48,7 @@ export class RefractClient extends Client {
     }
 
     this.options.intents = this.options.intents.add(
-      this.plugins.calculateIntents()
+      this.plugins.calculateIntents(),
     );
 
     try {
