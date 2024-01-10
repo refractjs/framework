@@ -1,6 +1,11 @@
+import { Constants } from "../constants";
 import { createHookDecorator } from "./hooks";
 
-export const PluginRegister = createHookDecorator("plugin:register");
-export const PluginUnregister = createHookDecorator("plugin:unregister");
-export const PluginLoad = createHookDecorator("plugin:load");
-export const PluginUnload = createHookDecorator("plugin:unload");
+export const PluginRegister = createHookDecorator(
+  Constants.Hooks.PluginRegister
+);
+export const PluginUnregister = createHookDecorator(
+  Constants.Hooks.PluginUnregister
+);
+export const PluginLoad = createHookDecorator(Constants.Hooks.PluginLoad);
+export const PluginUnload = createHookDecorator(Constants.Hooks.PluginUnload);

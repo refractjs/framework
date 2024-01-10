@@ -12,5 +12,9 @@ export default class extends Piece<CorePlugin> {
   @Listener()
   public async ready() {
     this.client.logger.info(`Logged in as ${this.client.user?.tag}!`);
+
+    const commands = this.client.registry.build();
+    await this.client.application?.commands.set([]);
+    await this.client.application?.commands.set(commands);
   }
 }

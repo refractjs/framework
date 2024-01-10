@@ -14,7 +14,7 @@ export interface CommandOptions {
   group?: string;
   subcommand?: string;
   nsfw?: boolean;
-  dmPermissions?: boolean | null | undefined;
+  dmPermission?: boolean | null | undefined;
   defaultMemberPermissions?: string | number | bigint | null | undefined;
 }
 
@@ -39,7 +39,7 @@ export function Command(options: CommandOptions): MethodDecorator {
       group: options.group ?? null,
       subcommand: options.subcommand ?? null,
       defaultMemberPermissions: options.defaultMemberPermissions,
-      dmPermissions: options.dmPermissions,
+      dmPermission: options.dmPermission,
       nsfw: options.nsfw ?? false,
       propertyKey,
       handler: "command",
@@ -54,31 +54,43 @@ export function Command(options: CommandOptions): MethodDecorator {
   };
 }
 
-export interface SlashCommandOptionMetadata<
-  T extends ApplicationCommandOptionType,
-  D extends SlashCommandOptionData
+export interface SlashCommandOptionMetadataGeneric<
+  T extends SlashCommandOptionDataMapKeys
 > {
   type: T;
   parameterIndex: number;
-  data: D;
+  data: SlashCommandOptionDataMap[T];
 }
+
+export type SlashCommandOptionMetadata =
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.String>
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.Number>
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.Integer>
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.Boolean>
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.Channel>
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.Role>
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.User>
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.Mentionable>
+  | SlashCommandOptionMetadataGeneric<ApplicationCommandOptionType.Attachment>;
+
+export type SlashCommandOptionDataMapKeys = keyof SlashCommandOptionDataMap;
+export type SlashCommandOptionDataMap = {
+  [ApplicationCommandOptionType.String]: SlashCommandStringOptionData;
+  [ApplicationCommandOptionType.Number]: SlashCommandNumberOptionData;
+  [ApplicationCommandOptionType.Integer]: SlashCommandIntegerOptionData;
+  [ApplicationCommandOptionType.Boolean]: SlashCommandBooleanOptionData;
+  [ApplicationCommandOptionType.Channel]: SlashCommandChannelOptionData;
+  [ApplicationCommandOptionType.Role]: SlashCommandRoleOptionData;
+  [ApplicationCommandOptionType.User]: SlashCommandUserOptionData;
+  [ApplicationCommandOptionType.Mentionable]: SlashCommandMentionableOptionData;
+  [ApplicationCommandOptionType.Attachment]: SlashCommandAttachmentOptionData;
+};
 
 export interface SlashCommandOptionData {
   name: string;
   description: string;
   required?: boolean;
 }
-
-export type SlashCommandOptionDataUnion =
-  | SlashCommandStringOptionData
-  | SlashCommandNumberOptionData
-  | SlashCommandIntegerOptionData
-  | SlashCommandBooleanOptionData
-  | SlashCommandChannelOptionData
-  | SlashCommandRoleOptionData
-  | SlashCommandUserOptionData
-  | SlashCommandMentionableOptionData
-  | SlashCommandAttachmentOptionData;
 
 export interface SlashCommandStringOptionData extends SlashCommandOptionData {
   autocomplete?: boolean;
@@ -116,7 +128,7 @@ export interface SlashCommandAttachmentOptionData
   extends SlashCommandOptionData {}
 
 function createOptionDecorator<D extends SlashCommandOptionData>(
-  type: ApplicationCommandOptionType,
+  type: SlashCommandOptionDataMapKeys,
   data: D
 ): ParameterDecorator {
   return (target, propertyKey, parameterIndex) => {
@@ -141,7 +153,7 @@ function createOptionDecorator<D extends SlashCommandOptionData>(
       target.constructor
     ) as Record<
       string,
-      SlashCommandOptionMetadata<any, SlashCommandOptionData>[]
+      SlashCommandOptionMetadataGeneric<SlashCommandOptionDataMapKeys>[]
     >;
 
     if (!slashOptions[propertyKey]) {

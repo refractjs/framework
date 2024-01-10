@@ -7,6 +7,7 @@ import { PieceHandlerManager } from "./handlers/PieceHandlerManager";
 import { ListenerHandler } from "./handlers/ListenerHandler";
 import { PieceLoader } from "./piece/PieceLoader";
 import { CommandHandler } from "./handlers/CommandHandler";
+import { ApplicationCommandRegistry } from "./registry/ApplicationCommandRegistry";
 
 export interface RefractClientOptions extends ClientOptions {
   logLevel?: LogLevel;
@@ -19,6 +20,7 @@ export class RefractClient extends Client {
   public store: PieceStore;
   public handlers: PieceHandlerManager;
   public loader: PieceLoader;
+  public registry: ApplicationCommandRegistry;
 
   public constructor(options: RefractClientOptions) {
     super(options);
@@ -28,6 +30,7 @@ export class RefractClient extends Client {
     this.store = new PieceStore();
     this.handlers = new PieceHandlerManager();
     this.loader = new PieceLoader(this);
+    this.registry = new ApplicationCommandRegistry(this);
 
     this.handlers
       .register(new ListenerHandler(this))

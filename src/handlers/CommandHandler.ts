@@ -4,10 +4,7 @@ import {
   Collection,
 } from "discord.js";
 import { RefractClient } from "../RefractClient";
-import {
-  SlashCommandOptionDataUnion,
-  SlashCommandOptionMetadata,
-} from "../decorators/Command";
+import { SlashCommandOptionMetadata } from "../decorators/Command";
 import { Piece } from "../piece/Piece";
 import { HandlerMetadata, PieceHandler } from "./PieceHandler";
 import { Constants } from "../constants";
@@ -18,7 +15,7 @@ export interface CommandHandlerMetadata extends HandlerMetadata {
   group: string | null;
   subcommand: string | null;
   nsfw: boolean;
-  dmPermissions: boolean | null | undefined;
+  dmPermission: boolean | null | undefined;
   defaultMemberPermissions: string | number | bigint | null | undefined;
   propertyKey: string | symbol;
   handler: "command";
@@ -26,7 +23,7 @@ export interface CommandHandlerMetadata extends HandlerMetadata {
 
 export interface CommandEntry extends CommandHandlerMetadata {
   piece: Piece;
-  options: SlashCommandOptionMetadata<any, SlashCommandOptionDataUnion>[];
+  options: SlashCommandOptionMetadata[];
 }
 
 export class CommandHandler extends PieceHandler {
