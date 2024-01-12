@@ -23,7 +23,6 @@
     "preserveWatchOutput": true,
     "allowUnusedLabels": false,
     "exactOptionalPropertyTypes": true,
-    "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": true,
     "noUnusedParameters": true,

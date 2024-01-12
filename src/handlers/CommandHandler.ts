@@ -4,10 +4,12 @@ import {
   Collection,
 } from "discord.js";
 import { RefractClient } from "../RefractClient";
+import { Constants } from "../constants";
 import { SlashCommandOptionMetadata } from "../decorators/Command";
 import { Piece } from "../piece/Piece";
+import { resolveInteractionReplyOptions } from "../util/resolveInteractionReplyOptions";
 import { HandlerMetadata, PieceHandler } from "./PieceHandler";
-import { Constants } from "../constants";
+import { GuardError } from "../errors/GuardError";
 
 export interface CommandHandlerMetadata extends HandlerMetadata {
   name: string;
@@ -42,18 +44,18 @@ export class CommandHandler extends PieceHandler {
       options:
         Reflect.getMetadata(
           Constants.Metadata.CommandOptions,
-          piece.constructor
+          piece.constructor,
         )?.[options.propertyKey] ?? [],
     };
 
     this.commands.set(
       this.getId(entry.name, entry.group, entry.subcommand),
-      entry
+      entry,
     );
   }
   public async unregister(_piece: Piece, options: CommandHandlerMetadata) {
     this.commands.delete(
-      this.getId(options.name, options.group, options.subcommand)
+      this.getId(options.name, options.group, options.subcommand),
     );
   }
 
@@ -61,7 +63,7 @@ export class CommandHandler extends PieceHandler {
     const entry = this.resolveEntry(
       interaction.commandName,
       interaction.options.getSubcommandGroup(false),
-      interaction.options.getSubcommand(false)
+      interaction.options.getSubcommand(false),
     );
 
     if (!entry) {
@@ -74,7 +76,7 @@ export class CommandHandler extends PieceHandler {
       const value = this.resolveOption(
         interaction,
         option.data.name,
-        option.type
+        option.type,
       );
       args[option.parameterIndex] = value ?? null;
     }
@@ -82,17 +84,33 @@ export class CommandHandler extends PieceHandler {
     try {
       await entry.piece[entry.propertyKey](...args);
     } catch (e) {
-      this.client.logger.error(e);
-      interaction
-        .reply("An error occurred while running this command.")
-        .catch(() => {});
+      if (e instanceof GuardError) {
+        this.client.logger.debug(
+          `${e.guard} guard failed for @${interaction.user.username}`,
+        );
+        if (this.client.listenerCount("guardError")) {
+          this.client.emit("guardError", interaction, e);
+          return;
+        } else {
+          if (e.silent) return;
+          const options = resolveInteractionReplyOptions(e.data);
+          if (options) {
+            interaction.reply(options).catch(() => {});
+          }
+        }
+      } else {
+        this.client.logger.error(e);
+        await interaction
+          .reply("An error occurred while running this command.")
+          .catch(() => {});
+      }
     }
   }
 
   public resolveEntry(
     name: string,
     group: string | null,
-    subcommand: string | null
+    subcommand: string | null,
   ) {
     if (group) {
       return (
@@ -115,7 +133,7 @@ export class CommandHandler extends PieceHandler {
   public resolveOption(
     interaction: ChatInputCommandInteraction,
     name: string,
-    type: ApplicationCommandOptionType
+    type: ApplicationCommandOptionType,
   ): unknown | null {
     switch (type) {
       case ApplicationCommandOptionType.String:
