@@ -6,10 +6,9 @@ import {
 import { RefractClient } from "../RefractClient";
 import { Constants } from "../constants";
 import { SlashCommandOptionMetadata } from "../decorators/Command";
-import { Piece } from "../piece/Piece";
-import { resolveInteractionReplyOptions } from "../util/resolveInteractionReplyOptions";
-import { HandlerMetadata, PieceHandler } from "./PieceHandler";
 import { GuardError } from "../errors/GuardError";
+import { Piece } from "../piece/Piece";
+import { HandlerMetadata, PieceHandler } from "./PieceHandler";
 
 export interface CommandHandlerMetadata extends HandlerMetadata {
   name: string;
@@ -93,10 +92,7 @@ export class CommandHandler extends PieceHandler {
           return;
         } else {
           if (e.silent) return;
-          const options = resolveInteractionReplyOptions(e.data);
-          if (options) {
-            interaction.reply(options).catch(() => {});
-          }
+          await interaction.reply({ content: e.message }).catch(() => {});
         }
       } else {
         this.client.logger.error(e);
