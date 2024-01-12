@@ -4,6 +4,9 @@ export const Constants = {
     PluginUnregister: "plugin:unregister",
     PluginLoad: "plugin:load",
     PluginUnload: "plugin:unload",
+    PiecePreLoad: "piece:preload",
+    PieceLoad: "piece:load",
+    PieceUnload: "piece:unload",
   },
   Metadata: {
     Handlers: "refract:handlers",

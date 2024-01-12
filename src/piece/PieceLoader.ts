@@ -6,12 +6,23 @@ import { Constructor } from "../types/utility";
 import { Piece, PieceContext } from "./Piece";
 import { Plugin } from "../plugins/Plugin";
 import { Constants } from "../constants";
+import { runHooks } from "../hooks/hooks";
 
 export class PieceLoader {
   public client: RefractClient;
+  public supportedExtensions = [".js", ".cjs"];
+  public unsupportedExtensions = [".d.ts", ".map"];
 
   public constructor(client: RefractClient) {
     this.client = client;
+
+    if (
+      Reflect.has(process, Symbol.for("ts-node.register.instance")) ||
+      process.env.TS_NODE_ENV ||
+      "bun" in process.versions
+    ) {
+      this.supportedExtensions.push(".ts", ".cts");
+    }
   }
 
   public async load(root: string, path: string): Promise<Piece | null> {
@@ -33,15 +44,29 @@ export class PieceLoader {
       this.client.handlers.get(data.handler).register(piece, data as any);
     }
 
-    // see if the piece is enabled
-    // see if the piece already exists
-    // run register hooks
-    // check if it's still enabled
+    if (!piece.enabled) return null;
+
+    await runHooks(piece, Constants.Hooks.PiecePreLoad);
+
+    if (!piece.enabled) {
+      await piece.unload();
+      this.client.logger.debug(`Piece ${piece.name} was disabled by a hook.`);
+    }
+
+    if (this.client.store.has(piece.name)) {
+      await this.client.store.get(piece.name)!.unload();
+      this.client.logger.debug(
+        `Piece ${piece.name} already exists, replacing it.`,
+      );
+    }
 
     this.client.store.set(piece.name, piece);
     this.client.logger.debug(
-      `Piece ${piece.name} loaded with ${metadata.length} handler(s).`
+      `Piece ${piece.name} loaded with ${metadata.length} handler(s).`,
     );
+
+    await runHooks(piece, Constants.Hooks.PieceLoad);
+
     return piece;
   }
 
@@ -58,6 +83,7 @@ export class PieceLoader {
     for (const data of handlers) {
       this.client.handlers.get(data.handler).unregister(piece, data as any);
     }
+    await runHooks(piece, Constants.Hooks.PieceUnload);
   }
 
   public async unloadPlugin(plugin: Plugin) {
@@ -68,6 +94,16 @@ export class PieceLoader {
     }
   }
 
+  public filterPath(path: string) {
+    for (const ext of this.unsupportedExtensions) {
+      if (path.endsWith(ext)) return false;
+    }
+    for (const ext of this.supportedExtensions) {
+      if (path.endsWith(ext)) return true;
+    }
+    return false;
+  }
+
   public async *walk(root: string): AsyncIterableIterator<string> {
     const paths = await fs.readdir(root).catch(() => []);
     for (const path of paths) {
@@ -76,7 +112,7 @@ export class PieceLoader {
       if (stats.isDirectory()) {
         yield* this.walk(fullPath);
       } else if (stats.isFile()) {
-        if (!path.endsWith(".js")) continue;
+        if (!this.filterPath(fullPath)) continue;
         yield fullPath;
       }
     }
@@ -94,7 +130,7 @@ export class PieceLoader {
       }
       return null;
     } catch (e) {
-      this.client.logger.error(e);
+      this.client.logger.warn(e);
       return null;
     }
   }

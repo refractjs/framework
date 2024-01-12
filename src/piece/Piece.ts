@@ -79,6 +79,7 @@ export class Piece<TPlugin extends Plugin = Plugin> {
 
   public async unload() {
     await this.client.loader.unload(this);
+    this.enabled = false;
   }
 
   public async reload() {
