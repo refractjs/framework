@@ -1,18 +1,21 @@
 export interface GuardErrorOptions {
   guard: string;
   silent?: boolean;
-  data?: any;
+  message?: string;
+  context?: any;
 }
 
 export class GuardError extends Error {
   public guard: string;
   public silent: boolean;
-  public data: any;
+  public message: string;
+  public context: any;
 
   public constructor(options: GuardErrorOptions) {
     super(`GuardError: ${options.guard}`);
     this.guard = options.guard;
     this.silent = options.silent ?? false;
-    this.data = options.data;
+    this.message = options.message ?? "";
+    this.context = options.context ?? undefined;
   }
 }

@@ -1,7 +1,6 @@
 import "reflect-metadata";
 
-export * from "./decorators/guards/createCommandGuard";
-export * from "./decorators/guards/OwnerOnly";
+export * from "./decorators/guards/index";
 export * from "./decorators/Listener";
 export * from "./decorators/Command";
 export * from "./errors/GuardError";
@@ -19,7 +18,6 @@ export * from "./plugins/PluginManager";
 export * from "./registry/ApplicationCommandRegistry";
 export * from "./types/utility";
 export * from "./util/getPluginNameFromPath";
-export * from "./util/resolveInteractionReplyOptions";
 export * from "./constants";
 export * from "./Logger";
 export * from "./RefractClient";
