@@ -14,6 +14,8 @@ export default class extends Piece<InternalPlugin> {
     this.client.logger.info(`Logged in as ${this.client.user?.tag}!`);
 
     const commands = this.client.registry.build();
+
+    // TODO: compare with the existing commands and only update if needed
     await this.client.application?.commands.set(commands);
   }
 }
