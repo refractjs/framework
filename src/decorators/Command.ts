@@ -16,6 +16,7 @@ export interface CommandOptions {
   nsfw?: boolean;
   dmPermission?: boolean | null | undefined;
   defaultMemberPermissions?: string | number | bigint | null | undefined;
+  passthrough?: boolean;
 }
 
 export function Command(options: CommandOptions): MethodDecorator {
@@ -24,13 +25,13 @@ export function Command(options: CommandOptions): MethodDecorator {
       Reflect.defineMetadata(
         Constants.Metadata.Handlers,
         [],
-        target.constructor
+        target.constructor,
       );
     }
 
     const handlers = Reflect.getMetadata(
       Constants.Metadata.Handlers,
-      target.constructor
+      target.constructor,
     ) as HandlerMetadata[];
 
     const handler: CommandHandlerMetadata = {
@@ -41,6 +42,7 @@ export function Command(options: CommandOptions): MethodDecorator {
       defaultMemberPermissions: options.defaultMemberPermissions,
       dmPermission: options.dmPermission,
       nsfw: options.nsfw ?? false,
+      passthrough: options.passthrough ?? false,
       propertyKey,
       handler: "command",
     };
@@ -49,13 +51,13 @@ export function Command(options: CommandOptions): MethodDecorator {
     Reflect.defineMetadata(
       Constants.Metadata.Handlers,
       handlers,
-      target.constructor
+      target.constructor,
     );
   };
 }
 
 export interface SlashCommandOptionMetadataGeneric<
-  T extends SlashCommandOptionDataMapKeys
+  T extends SlashCommandOptionDataMapKeys,
 > {
   type: T;
   parameterIndex: number;
@@ -129,7 +131,7 @@ export interface SlashCommandAttachmentOptionData
 
 function createOptionDecorator<D extends SlashCommandOptionData>(
   type: SlashCommandOptionDataMapKeys,
-  data: D
+  data: D,
 ): ParameterDecorator {
   return (target, propertyKey, parameterIndex) => {
     if (typeof propertyKey !== "string") {
@@ -138,19 +140,19 @@ function createOptionDecorator<D extends SlashCommandOptionData>(
     if (
       !Reflect.hasMetadata(
         Constants.Metadata.CommandOptions,
-        target.constructor
+        target.constructor,
       )
     ) {
       Reflect.defineMetadata(
         Constants.Metadata.CommandOptions,
         {},
-        target.constructor
+        target.constructor,
       );
     }
 
     const slashOptions = Reflect.getMetadata(
       Constants.Metadata.CommandOptions,
-      target.constructor
+      target.constructor,
     ) as Record<
       string,
       SlashCommandOptionMetadataGeneric<SlashCommandOptionDataMapKeys>[]
@@ -169,7 +171,7 @@ function createOptionDecorator<D extends SlashCommandOptionData>(
     Reflect.defineMetadata(
       Constants.Metadata.CommandOptions,
       slashOptions,
-      target.constructor
+      target.constructor,
     );
   };
 }
@@ -177,62 +179,62 @@ function createOptionDecorator<D extends SlashCommandOptionData>(
 export function StringOption(data: SlashCommandStringOptionData) {
   return createOptionDecorator<SlashCommandStringOptionData>(
     ApplicationCommandOptionType.String,
-    data
+    data,
   );
 }
 
 export function NumberOption(data: SlashCommandNumberOptionData) {
   return createOptionDecorator<SlashCommandNumberOptionData>(
     ApplicationCommandOptionType.Number,
-    data
+    data,
   );
 }
 
 export function IntegerOption(data: SlashCommandIntegerOptionData) {
   return createOptionDecorator<SlashCommandIntegerOptionData>(
     ApplicationCommandOptionType.Integer,
-    data
+    data,
   );
 }
 
 export function BooleanOption(data: SlashCommandBooleanOptionData) {
   return createOptionDecorator<SlashCommandBooleanOptionData>(
     ApplicationCommandOptionType.Boolean,
-    data
+    data,
   );
 }
 
 export function ChannelOption(data: SlashCommandChannelOptionData) {
   return createOptionDecorator<SlashCommandChannelOptionData>(
     ApplicationCommandOptionType.Channel,
-    data
+    data,
   );
 }
 
 export function RoleOption(data: SlashCommandRoleOptionData) {
   return createOptionDecorator<SlashCommandRoleOptionData>(
     ApplicationCommandOptionType.Role,
-    data
+    data,
   );
 }
 
 export function UserOption(data: SlashCommandUserOptionData) {
   return createOptionDecorator<SlashCommandUserOptionData>(
     ApplicationCommandOptionType.User,
-    data
+    data,
   );
 }
 
 export function MentionableOption(data: SlashCommandMentionableOptionData) {
   return createOptionDecorator<SlashCommandMentionableOptionData>(
     ApplicationCommandOptionType.Mentionable,
-    data
+    data,
   );
 }
 
 export function AttachmentOption(data: SlashCommandAttachmentOptionData) {
   return createOptionDecorator<SlashCommandAttachmentOptionData>(
     ApplicationCommandOptionType.Attachment,
-    data
+    data,
   );
 }

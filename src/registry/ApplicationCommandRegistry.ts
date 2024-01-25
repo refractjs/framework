@@ -98,7 +98,7 @@ export class ApplicationCommandRegistry {
       .setDefaultMemberPermissions(command.defaultMemberPermissions)
       .setNSFW(command.nsfw);
 
-    for (const option of command.options) {
+    for (const option of command.options.toReversed()) {
       this.addOption(builder, option);
     }
 
@@ -110,7 +110,7 @@ export class ApplicationCommandRegistry {
       .setName(command.subcommand!)
       .setDescription(command.description);
 
-    for (const option of command.options) {
+    for (const option of command.options.toReversed()) {
       this.addOption(builder, option);
     }
 
@@ -141,13 +141,17 @@ export class ApplicationCommandRegistry {
       if (!subcommandCommand.subcommand) continue;
       const command = commands.find((c) => c.name === subcommandCommand.name);
       if (!command) continue;
-      const group = (command.options as any[]).find(
-        (option) =>
-          option instanceof SlashCommandSubcommandGroupBuilder &&
-          option.name === subcommandCommand.group,
-      ) as SlashCommandSubcommandGroupBuilder | undefined;
-      if (!group) continue;
-      group.addSubcommand(this.buildSubcommand(subcommandCommand));
+      if (subcommandCommand.group) {
+        const group = (command.options as any[]).find(
+          (option) =>
+            option instanceof SlashCommandSubcommandGroupBuilder &&
+            option.name === subcommandCommand.group,
+        ) as SlashCommandSubcommandGroupBuilder | undefined;
+        if (!group) continue;
+        group.addSubcommand(this.buildSubcommand(subcommandCommand));
+      } else {
+        command.addSubcommand(this.buildSubcommand(subcommandCommand));
+      }
     }
 
     return commands;

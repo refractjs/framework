@@ -18,6 +18,7 @@ export interface CommandHandlerMetadata extends HandlerMetadata {
   nsfw: boolean;
   dmPermission: boolean | null | undefined;
   defaultMemberPermissions: string | number | bigint | null | undefined;
+  passthrough: boolean;
   propertyKey: string | symbol;
   handler: "command";
 }
@@ -108,18 +109,14 @@ export class CommandHandler extends PieceHandler {
     group: string | null,
     subcommand: string | null,
   ) {
-    if (group) {
-      return (
-        this.commands.get(this.getId(name, group, subcommand)) ||
-        this.commands.get(this.getId(name, group)) ||
-        this.commands.get(this.getId(name))
-      );
-    } else {
-      return (
-        this.commands.get(this.getId(name, subcommand)) ||
-        this.commands.get(this.getId(name))
-      );
+    const ids = [name, group, subcommand].filter(Boolean);
+    for (let i = ids.length; i > 0; i--) {
+      const id = ids.slice(0, i).join(".");
+      const entry = this.commands.get(id);
+      if (entry && !entry.passthrough) return entry;
     }
+
+    return null;
   }
 
   public getId(a: string, b?: string | null, c?: string | null) {
