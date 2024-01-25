@@ -9,6 +9,7 @@ import { SlashCommandOptionMetadata } from "../decorators/Command";
 import { GuardError } from "../errors/GuardError";
 import { Piece } from "../piece/Piece";
 import { HandlerMetadata, PieceHandler } from "./PieceHandler";
+import { commandAsyncLocalStorage } from "../context/command";
 
 export interface CommandHandlerMetadata extends HandlerMetadata {
   name: string;
@@ -81,27 +82,29 @@ export class CommandHandler extends PieceHandler {
       args[option.parameterIndex] = value ?? null;
     }
 
-    try {
-      await entry.piece[entry.propertyKey](...args);
-    } catch (e) {
-      if (e instanceof GuardError) {
-        this.client.logger.debug(
-          `${e.guard} guard failed for @${interaction.user.username}`,
-        );
-        if (this.client.listenerCount("guardError")) {
-          this.client.emit("guardError", interaction, e);
-          return;
+    commandAsyncLocalStorage.run({ interaction }, async () => {
+      try {
+        await entry.piece[entry.propertyKey](...args);
+      } catch (e) {
+        if (e instanceof GuardError) {
+          this.client.logger.debug(
+            `${e.guard} guard failed for @${interaction.user.username}`,
+          );
+          if (this.client.listenerCount("guardError")) {
+            this.client.emit("guardError", interaction, e);
+            return;
+          } else {
+            if (e.silent) return;
+            await interaction.reply({ content: e.message }).catch(() => {});
+          }
         } else {
-          if (e.silent) return;
-          await interaction.reply({ content: e.message }).catch(() => {});
+          this.client.logger.error(e);
+          await interaction
+            .reply("An error occurred while running this command.")
+            .catch(() => {});
         }
-      } else {
-        this.client.logger.error(e);
-        await interaction
-          .reply("An error occurred while running this command.")
-          .catch(() => {});
       }
-    }
+    });
   }
 
   public resolveEntry(

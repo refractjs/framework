@@ -1,5 +1,6 @@
 import "reflect-metadata";
 
+export * from "./context/command";
 export * from "./decorators/guards/index";
 export * from "./decorators/Listener";
 export * from "./decorators/Command";
