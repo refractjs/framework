@@ -37,6 +37,7 @@ export class CronHandler extends PieceHandler {
     job.start();
     this.jobs.set(options, job);
   }
+
   public async unregister(_piece: Piece, options: CronHandlerMetadata) {
     const job = this.jobs.get(options);
     if (job) {

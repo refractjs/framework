@@ -54,6 +54,7 @@ export class CommandHandler extends PieceHandler {
       entry,
     );
   }
+
   public async unregister(_piece: Piece, options: CommandHandlerMetadata) {
     this.commands.delete(
       this.getId(options.name, options.group, options.subcommand),
