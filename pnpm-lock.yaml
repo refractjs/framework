@@ -11,6 +11,9 @@ dependencies:
   chalk:
     specifier: ^4.1.2
     version: 4.1.2
+  cron:
+    specifier: ^3.1.6
+    version: 3.1.6
   discord.js:
     specifier: ^14.14.1
     version: 14.14.1
@@ -1190,6 +1193,13 @@ packages:
       }
     dev: true
 
+  /@types/luxon@3.3.8:
+    resolution:
+      {
+        integrity: sha512-jYvz8UMLDgy3a5SkGJne8H7VA7zPV2Lwohjx0V8V31+SqAjNmurWMkk9cQhfvlcnXWudBpK9xPM1n4rljOcHYQ==,
+      }
+    dev: false
+
   /@types/node@20.10.8:
     resolution:
       {
@@ -1852,6 +1862,16 @@ packages:
       - supports-color
       - ts-node
     dev: true
+
+  /cron@3.1.6:
+    resolution:
+      {
+        integrity: sha512-cvFiQCeVzsA+QPM6fhjBtlKGij7tLLISnTSvFxVdnFGLdz+ZdXN37kNe0i2gefmdD17XuZA6n2uPVwzl4FxW/w==,
+      }
+    dependencies:
+      "@types/luxon": 3.3.8
+      luxon: 3.4.4
+    dev: false
 
   /cross-spawn@7.0.3:
     resolution:
@@ -3390,6 +3410,14 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /luxon@3.4.4:
+    resolution:
+      {
+        integrity: sha512-zobTr7akeGHnv7eBOXcRgMeCP6+uyYsczwmeRCauvpvaAltgNyTbLH/+VaEAPUeWBT+1GuNmz4wC/6jtQzbbVA==,
+      }
+    engines: { node: ">=12" }
+    dev: false
 
   /magic-bytes.js@1.7.0:
     resolution:

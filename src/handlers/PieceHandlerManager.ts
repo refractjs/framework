@@ -2,10 +2,12 @@ import { Collection } from "discord.js";
 import { CommandHandler } from "./CommandHandler";
 import { ListenerHandler } from "./ListenerHandler";
 import { PieceHandler } from "./PieceHandler";
+import { CronHandler } from "./CronHandler";
 
 export interface Handlers {
   listener: ListenerHandler;
   command: CommandHandler;
+  cron: CronHandler;
 }
 
 export class PieceHandlerManager extends Collection<string, PieceHandler> {

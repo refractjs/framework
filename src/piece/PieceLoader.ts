@@ -36,14 +36,6 @@ export class PieceLoader {
     };
     const piece = new Piece(context);
 
-    const metadata: HandlerMetadata[] =
-      Reflect.getMetadata(Constants.Metadata.Handlers, piece.constructor) ?? [];
-
-    for (const data of metadata) {
-      piece[data.propertyKey] = (piece[data.propertyKey] as any).bind(piece);
-      this.client.handlers.get(data.handler).register(piece, data as any);
-    }
-
     if (!piece.enabled) return null;
 
     await runHooks(piece, Constants.Hooks.PiecePreLoad);
@@ -58,6 +50,14 @@ export class PieceLoader {
       this.client.logger.debug(
         `Piece ${piece.name} already exists, replacing it.`,
       );
+    }
+
+    const metadata: HandlerMetadata[] =
+      Reflect.getMetadata(Constants.Metadata.Handlers, piece.constructor) ?? [];
+
+    for (const data of metadata) {
+      piece[data.propertyKey] = (piece[data.propertyKey] as any).bind(piece);
+      this.client.handlers.get(data.handler).register(piece, data as any);
     }
 
     this.client.store.set(piece.name, piece);

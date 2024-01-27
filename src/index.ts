@@ -2,10 +2,12 @@ import "reflect-metadata";
 
 export * from "./context/command";
 export * from "./decorators/guards/index";
-export * from "./decorators/Listener";
 export * from "./decorators/Command";
+export * from "./decorators/Cron";
+export * from "./decorators/Listener";
 export * from "./errors/GuardError";
 export * from "./handlers/CommandHandler";
+export * from "./handlers/CronHandler";
 export * from "./handlers/ListenerHandler";
 export * from "./handlers/PieceHandler";
 export * from "./handlers/PieceHandlerManager";

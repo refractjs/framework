@@ -8,6 +8,7 @@ import { PieceStore } from "./piece/PieceStore";
 import { PluginManager } from "./plugins/PluginManager";
 import { ApplicationCommandRegistry } from "./registry/ApplicationCommandRegistry";
 import { InternalPlugin } from "./plugins/internal/InternalPlugin";
+import { CronHandler } from "./handlers/CronHandler";
 
 export interface RefractClientOptions extends ClientOptions {
   logLevel?: LogLevel;
@@ -34,7 +35,8 @@ export class RefractClient extends Client {
 
     this.handlers
       .register(new ListenerHandler(this))
-      .register(new CommandHandler(this));
+      .register(new CommandHandler(this))
+      .register(new CronHandler(this));
 
     this.plugins.register(new InternalPlugin(this));
   }

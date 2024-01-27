@@ -83,7 +83,7 @@ export class Piece<TPlugin extends Plugin = Plugin> {
   }
 
   public async reload() {
-    await this.client.loader.load(this.location.root, this.location.name);
+    await this.client.loader.load(this.location.root, this.location.full);
   }
 
   public toJSON(): PieceJSON {
