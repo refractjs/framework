@@ -19,9 +19,6 @@ export class ApplicationCommandRegistry {
     builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
     data: SlashCommandOptionMetadata,
   ) {
-    if (data.type === ApplicationCommandOptionType.String) {
-      data;
-    }
     switch (data.type) {
       case ApplicationCommandOptionType.Attachment:
         return builder.addAttachmentOption((option) =>
